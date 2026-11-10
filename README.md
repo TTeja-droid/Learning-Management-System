@@ -1,37 +1,52 @@
-# Learning-Management-System
+# Learning Management System (LMS) - MySQL Database Project
+The objective of this database engine is to model a data framework for academic platforms. It captures user state changes—from a student's initial entry activation to historical enrollment logs and performance metrics across multiple evaluation levels.
 
-Project Overview
+Key Design Objectives
 
-The primary objective of this project is to build an organized relational database infrastructure capable of handling core LMS operations. The platform tracks user interactions from initial course enrollment to final grading criteria.
-
-Key Objectives
-
-• User Management: Maintain distinct structural entries for students and domain mentors.
-• Academic Cataloging: Organise comprehensive course listings categorized by technology tracks.
-• Progress Tracking: Monitor active, completed, or dropped student enrollment states.
-• Performance Analytics: Log individual scores across assignments, quizzes, and project evaluations.
-• Automation: Use stored procedures and automated triggers to log structural history and update metadata.
-
-📐 Database Design & Architecture
+• Faculty & Student Allocation: Map professional subject-matter experts to target student groups.
+• Course Cataloging & Granularity: Manage multi-category educational courses with varying tracking durations.
+• Enrollment State Automation: Track operational status flows (Active, Completed, Dropped) dynamically.
+• Performance Analysis Metrics: Perform analytical calculations over multi-tier metrics such as project evaluations, quizzes, and final scores.
+• System Auditing & Security Logs: Use automated row triggers to track platform events and capture change histories.
 
 
-Entity-Relationship (ER) Schema
+ Relational Database Schema Design
 
-The relational database structure consists of five core tables optimized for data integrity with appropriate Primary Keys (PK) and Foreign Keys (FK):
-• Students: Stores student profile baselines.
-	• student_id (PK), student_name, email, phone, city
-• Mentors: Tracks teaching faculty metadata.
-	• mentor_id (PK), mentor_name, expertise
-• Courses: Catalogues active instructional subjects linked to mentors.
-	• course_id (PK), mentor_id (FK), course_name, category, duration
-• Enrollment: Logs relational connection mapping students to chosen tracks.
-	• enrollment_id (PK), student_id (FK), course_id (FK), enroll_date, status
-• Assessments: Contains graded operational evaluations.
-	• assessment_id (PK), student_id (FK), course_id (FK), assessment_name, score, assessment_date
-  
- Key Project Takeaways
+The data engine comprises 5 primary transactional tables and specialized audit logging layers:
+    ┌───────────────┐          ┌───────────────┐
+    │    Mentors    │          │   Students2   │
+    └───────┬───────┘          └───────┬───────┘
+            │ 1                        │ 1
+            │                          │
+            │ M                        │ M
+    ┌───────▼───────┐          ┌───────▼───────┐
+    │    Courses    │          │  Enrollment   │
+    └───────┬───────┘          └───────▲───────┘
+            │ 1                        │
+            │                          │ M
+            └───────────┐  ┌───────────┘
+                      M │  │ M
+                    ┌───▼──┴────────┐
+                    │  Assessments  │
+                    └───────────────┘
 
-1. Relational Integrity: Implemented foreign key constraints to maintain clean data records across student enrollments and graded assignments.
-2. Text Processing & Calculation: Used built-in SQL string and date functions to dynamically mask sensitive user phone records and calculate performance durations.
-3. Advanced Automation Elements: Created custom procedures, modular virtual views, and audit logging triggers to minimize redundant code and monitor platform updates automatically.
+Table Definitions & Primary Baselines
 
+1. Students2: Base registry for registered student profiles.
+	• Columns: student_id (PK), student_name, email (Unique), phone, city.
+2. Mentors: Registry for tracking domain faculty expertise areas.
+	• Columns: mentor_id (PK), mentor_name, expertise.
+3. Courses: Catalog mapping active tracks, specific instructional categories, and class durations.
+	• Columns: course_id (PK), mentor_id (FK), course_name, category, duration.
+4. Enrollment: Roster managing courses, target student profiles, enrollment tracking timestamps, and statuses.
+	• Columns: enrollment_id (PK), student_id (FK), course_id (FK), enroll_date, status.
+5. Assessments: Metrics ledger containing transactional exam categories, performance parameters, and dates.
+1. 
+	• Columns: assessment_id (PK), student_id (FK), course_id (FK), assessment_name, score, assessment_date.
+
+
+ Key project  Takeaways
+
+• Relational Accuracy & Key Optimization: Enforced structural relational matching constraints across core transactional entities to maintain perfect platform data alignment.
+• Advanced Programmatic Development: Encapsulated frequently executed system tasks using high-performance stored procedures to streamline database application layers.
+• Real-time Event Automation & Auditing: Automated real-time log tracking by binding reactive row triggers onto mutation workflows to create a reliable historical record for core metrics changes.
